@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Now Playing</title>
     <meta name="robots" content="noindex, nofollow"> <!-- Prevent indexing -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Spotify Now Playing</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,65 +26,41 @@
             object-fit: cover; /* Ensures the image covers the area without distortion */
             border-radius: 0;  /* No rounded corners */
         }
-        #logoutButton {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            background-color: #1DB954; /* Spotify green */
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 2;
-        }
-        #logoutButton:hover {
-            background-color: #1ed760;
-        }
     </style>
 </head>
 <body>
-
     <img id="albumArt" class="album-art" src="" alt="Album Art">
-    <button id="logoutButton" onclick="logout()">Log Out</button>
 
     <script>
-        // Your Spotify Client ID and Redirect URI
-        const clientId = 'a559dfdebb624907ae94356f1291ca17';  // Your Client ID
-        const redirectUri = 'https://che444rtx.github.io/spotify-album-cover';  // Your Redirect URI
-        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=user-read-playback-state`;
+        // Spotify API Configuration
+        const spotifyClientId = 'a559dfdebb624907ae94356f1291ca17';
+        const redirectUri = 'https://che444rtx.github.io/spotify-album-cover';
+        const authUrl = `https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=user-read-playback-state`;
 
-        let accessToken = '';  // Will hold the token after OAuth
+        let accessToken = '';
 
-        // 1. Redirect the user for Spotify authentication
+        // Authenticate with Spotify
         function authenticate() {
             window.location = authUrl;
         }
 
-        // 2. Log out function: Clear the token and reload the page
-        function logout() {
-            accessToken = '';  // Clear the token
-            window.location = redirectUri;  // Reload the page or redirect to your desired URL
-        }
-
-        // 3. Parse the token from the URL after OAuth
+        // Parse Spotify token
         window.onload = function () {
             const urlParams = new URLSearchParams(window.location.hash.substring(1));
             accessToken = urlParams.get('access_token');
 
             if (accessToken) {
                 fetchCurrentlyPlaying(accessToken);
-                // Set up periodic refresh every 1 second (1000 ms)
+                // Refresh every second
                 setInterval(() => {
                     fetchCurrentlyPlaying(accessToken);
-                }, 1000);  // 1-second interval
+                }, 1000);
             } else {
-                authenticate();  // If no token, authenticate again
+                authenticate();
             }
         };
 
-        // 4. Fetch the currently playing song and update the album art
+        // Fetch the currently playing song and update the album art
         function fetchCurrentlyPlaying(token) {
             fetch('https://api.spotify.com/v1/me/player/currently-playing', {
                 headers: {
@@ -103,6 +79,5 @@
             });
         }
     </script>
-
 </body>
 </html>
