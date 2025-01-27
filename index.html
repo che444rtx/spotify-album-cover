@@ -15,17 +15,21 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: black; /* No background color */
+            background-color: black;
+            overflow: hidden; /* Prevents any overflow if image is larger than screen */
         }
         .album-art {
-            width: 300px;
-            height: 300px;
-            border-radius: 15px;
+            max-width: 100vw;  /* Image can take up the full width of the viewport */
+            max-height: 100vh;  /* Image can take up the full height of the viewport */
+            width: auto;
+            height: auto;
+            object-fit: contain;  /* Ensures image retains aspect ratio without distortion */
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
         }
         .container {
             text-align: center;
             color: white;
+            z-index: 10;  /* To ensure text is displayed on top of the image */
         }
         #logoutButton {
             margin-top: 20px;
@@ -76,6 +80,10 @@
 
             if (accessToken) {
                 fetchCurrentlyPlaying(accessToken);
+                // Set up periodic refresh every 1 second (1000 ms)
+                setInterval(() => {
+                    fetchCurrentlyPlaying(accessToken);
+                }, 1000);  // 1-second interval
             } else {
                 authenticate();  // If no token, authenticate again
             }
