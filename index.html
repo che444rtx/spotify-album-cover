@@ -35,10 +35,11 @@
     </div>
 
     <script>
-        // Replace with your actual Spotify Client ID and Redirect URI
-        const clientId = 'a559dfdebb624907ae94356f1291ca17';
-        const redirectUri = 'https://che444rtx.github.io/spotify-album-cover';
-        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=user-read-playback-state`;
+        // Your Spotify Client ID and Redirect URI
+        const clientId = 'a559dfdebb624907ae94356f1291ca17';  // Your Client ID
+        const redirectUri = 'https://che444rtx.github.io/spotify-album-cover';  // Your Redirect URI
+
+        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=user-read-playback-state`;
 
         let accessToken = '';  // Will hold the token after OAuth
 
