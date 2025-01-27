@@ -29,7 +29,7 @@
     </style>
 </head>
 <body>
-    <img id="albumArt" class="album-art" src="" alt="Album Art">
+    <img id="albumArt" class="album-art" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDR2MmV0Mzc0NXdia3c4NTA5aXQ3b2V5YTZ5ZThhbmhwMnFnZXU0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2SYpZ92iLQsF6QZl5u/giphy.gif" alt="Album Art">
 
     <script>
         // Spotify API Configuration
@@ -69,13 +69,18 @@
             })
             .then(response => response.json())
             .then(data => {
+                const albumArt = document.getElementById('albumArt');
                 if (data && data.item) {
                     const albumArtUrl = data.item.album.images[0].url;
-                    document.getElementById('albumArt').src = albumArtUrl;
+                    albumArt.src = albumArtUrl;
+                } else {
+                    albumArt.src = 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDR2MmV0Mzc0NXdia3c4NTA5aXQ3b2V5YTZ5ZThhbmhwMnFnZXU0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2SYpZ92iLQsF6QZl5u/giphy.gif';
                 }
             })
             .catch(error => {
                 console.error('Error fetching track data:', error);
+                // Display default GIF in case of error
+                document.getElementById('albumArt').src = 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDR2MmV0Mzc0NXdia3c4NTA5aXQ3b2V5YTZ5ZThhbmhwMnFnZXU0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2SYpZ92iLQsF6QZl5u/giphy.gif';
             });
         }
     </script>
