@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow"> <!-- Prevent indexing -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <!-- Ensure UTF-8 encoding -->
     <style>
         body {
             margin: 0;
@@ -47,4 +49,17 @@
             if (accessToken) {
                 fetchCurrentlyPlaying(accessToken);
             } else {
-            
+                authenticate(); // If no token, authenticate again
+            }
+        };
+
+        // 3. Fetch the currently playing song and update the album art
+        function fetchCurrentlyPlaying(token) {
+            fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+               
