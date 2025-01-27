@@ -19,13 +19,12 @@
             overflow: hidden; /* Prevents scrollbars */
         }
         .album-art {
-            width: 110vw;       /* 110% of the screen width */
-            height: 110vh;      /* 110% of the screen height */
-            object-fit: cover;  /* Ensures the image covers the area without distortion */
-            border-radius: 0;   /* No rounded corners */
-            position: absolute;
-            top: -5%;           /* Slightly moves the image up to compensate for the extra size */
-            left: -5%;          /* Slightly moves the image left to fit */
+            max-width: 100vw;  /* Allow image to scale up to full screen width */
+            max-height: 100vh; /* Allow image to scale up to full screen height */
+            width: 100%;       /* Set the width to 100% */
+            height: 100%;      /* Set the height to 100% */
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+            border-radius: 0;  /* No rounded corners */
         }
         .container {
             text-align: center;
