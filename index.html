@@ -6,33 +6,25 @@
     <title>Spotify Now Playing</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            margin: 0;
-            background-color: #121212;
+            background-color: black; /* No background color */
         }
-        .album-art {
+        #albumArt {
             width: 300px;
             height: 300px;
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
         }
-        .container {
-            text-align: center;
-            color: white;
-        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Now Playing on Spotify</h1>
-        <img id="albumArt" class="album-art" src="" alt="Album Art">
-        <p id="songTitle">No song playing</p>
-    </div>
+    <img id="albumArt" src="" alt="Album Art">
 
     <script>
         // Your Spotify Client ID and Redirect URI
@@ -71,12 +63,7 @@
             .then(data => {
                 if (data && data.item) {
                     const albumArtUrl = data.item.album.images[0].url;
-                    const songTitle = data.item.name;
-
                     document.getElementById('albumArt').src = albumArtUrl;
-                    document.getElementById('songTitle').textContent = songTitle;
-                } else {
-                    document.getElementById('songTitle').textContent = 'No song playing';
                 }
             })
             .catch(error => {
