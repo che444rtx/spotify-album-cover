@@ -35,18 +35,16 @@
     </div>
 
     <script>
-        // Replace with your own credentials
+        // Replace with your actual Spotify Client ID and Redirect URI
         const clientId = 'a559dfdebb624907ae94356f1291ca17';
         const redirectUri = 'https://che444rtx.github.io/spotify-album-cover';
-        const authUrl = 'https://accounts.spotify.com/authorize';
-        const apiUrl = 'https://api.spotify.com/v1/me/player/currently-playing';
-        
+        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=user-read-playback-state`;
+
         let accessToken = '';  // Will hold the token after OAuth
 
         // 1. Redirect the user for Spotify authentication
         function authenticate() {
-            const authEndpoint = `${authUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=user-read-playback-state`;
-            window.location = authEndpoint;
+            window.location = authUrl;
         }
 
         // 2. Parse the token from the URL after OAuth
@@ -55,17 +53,17 @@
             accessToken = urlParams.get('access_token');
 
             if (accessToken) {
-                fetchCurrentlyPlaying();
+                fetchCurrentlyPlaying(accessToken);
             } else {
-                authenticate();
+                authenticate(); // If no token, authenticate again
             }
         };
 
         // 3. Fetch the currently playing song and update the album art
-        function fetchCurrentlyPlaying() {
-            fetch(apiUrl, {
+        function fetchCurrentlyPlaying(token) {
+            fetch('https://api.spotify.com/v1/me/player/currently-playing', {
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`
+                    'Authorization': `Bearer ${token}`
                 }
             })
             .then(response => response.json())
@@ -73,13 +71,15 @@
                 if (data && data.item) {
                     const albumArtUrl = data.item.album.images[0].url;
                     const songTitle = data.item.name;
-                    
+
                     document.getElementById('albumArt').src = albumArtUrl;
                     document.getElementById('songTitle').textContent = songTitle;
+                } else {
+                    document.getElementById('songTitle').textContent = 'No song playing';
                 }
             })
             .catch(error => {
-                console.error('Error fetching currently playing track:', error);
+                console.error('Error fetching track data:', error);
             });
         }
     </script>
