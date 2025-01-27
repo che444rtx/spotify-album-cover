@@ -1,65 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow"> <!-- Prevent indexing -->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <!-- Ensure UTF-8 encoding -->
-    <style>
-        body {
+<title>Spotify Now Playing</title>
+<style>
+body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: black; /* Black background */
-        }
+display: flex;
+align-items: center;
+justify-content: center;
+height: 100vh;
+            margin: 0;
+            background-color: #121212;
+            background-color: black; /* No background color */
+}
+        .album-art {
         #albumArt {
-            width: 300px;
-            height: 300px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+width: 300px;
+height: 300px;
+border-radius: 15px;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+}
+        .container {
+            text-align: center;
+            color: white;
         }
-    </style>
+</style>
 </head>
 <body>
 
+    <div class="container">
+        <h1>Now Playing on Spotify</h1>
+        <img id="albumArt" class="album-art" src="" alt="Album Art">
+        <p id="songTitle">No song playing</p>
+    </div>
     <img id="albumArt" src="" alt="Album Art">
 
-    <script>
-        // Your Spotify Client ID and Redirect URI
-        const clientId = 'a559dfdebb624907ae94356f1291ca17';  // Your Client ID
-        const redirectUri = 'https://che444rtx.github.io/spotify-album-cover';  // Your Redirect URI
+<script>
+// Your Spotify Client ID and Redirect URI
+@@ -71,12 +63,7 @@ <h1>Now Playing on Spotify</h1>
+.then(data => {
+if (data && data.item) {
+const albumArtUrl = data.item.album.images[0].url;
+                    const songTitle = data.item.name;
 
-        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=user-read-playback-state`;
-
-        let accessToken = '';  // Will hold the token after OAuth
-
-        // 1. Redirect the user for Spotify authentication
-        function authenticate() {
-            window.location = authUrl;
-        }
-
-        // 2. Parse the token from the URL after OAuth
-        window.onload = function () {
-            const urlParams = new URLSearchParams(window.location.hash.substring(1));
-            accessToken = urlParams.get('access_token');
-
-            if (accessToken) {
-                fetchCurrentlyPlaying(accessToken);
-            } else {
-                authenticate(); // If no token, authenticate again
-            }
-        };
-
-        // 3. Fetch the currently playing song and update the album art
-        function fetchCurrentlyPlaying(token) {
-            fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-               
+document.getElementById('albumArt').src = albumArtUrl;
+                    document.getElementById('songTitle').textContent = songTitle;
+                } else {
+                    document.getElementById('songTitle').textContent = 'No song playing';
+}
+})
+.catch(error => {
