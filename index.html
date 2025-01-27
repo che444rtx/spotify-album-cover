@@ -3,86 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify Now Playing</title>
-    <meta name="robots" content="noindex, nofollow"> <!-- Prevent indexing -->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Spotify Circular Progress</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             background-color: black;
-            overflow: hidden; /* Prevents scrollbars */
+            color: white;
+            margin: 0;
         }
+
+        .player-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        svg {
+            transform: rotate(-90deg); /* Rotate for correct progress direction */
+        }
+
         .album-art {
-            max-width: 100vw;  /* Allow image to scale up to full screen width */
-            max-height: 100vh; /* Allow image to scale up to full screen height */
-            width: 100%;       /* Set the width to 100% */
-            height: 100%;      /* Set the height to 100% */
-            object-fit: cover; /* Ensures the image covers the area without distortion */
-            border-radius: 0;  /* No rounded corners */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .track-details {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .track-details h3,
+        .track-details p {
+            margin: 5px 0;
+        }
+
+        .timestamps {
+            position: absolute;
+            width: 100%;
+            top: 85%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 0 15px;
         }
     </style>
 </head>
 <body>
-    <img id="albumArt" class="album-art" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDR2MmV0Mzc0NXdia3c4NTA5aXQ3b2V5YTZ5ZThhbmhwMnFnZXU0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2SYpZ92iLQsF6QZl5u/giphy.gif" alt="Album Art">
+    <div class="player-container">
+        <!-- SVG Progress Bar -->
+        <svg width="300" height="300">
+            <circle cx="150" cy="150" r="120" stroke="#555" stroke-width="10" fill="none"></circle>
+            <circle id="progressCircle" cx="150" cy="150" r="120" stroke="#1db954" stroke-width="10" fill="none" 
+                stroke-dasharray="755" stroke-dashoffset="755"></circle>
+        </svg>
 
-    <script>
-        // Spotify API Configuration
-        const spotifyClientId = 'a559dfdebb624907ae94356f1291ca17';
-        const redirectUri = 'https://che444rtx.github.io/spotify-album-cover';
-        const authUrl = `https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=user-read-playback-state`;
+        <!-- Album Art -->
+        <img id="albumArt" class="album-art" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDR2MmV0Mzc0NXdia3c4NTA5aXQ3b2V5YTZ5ZThhbmhwMnFnZXU0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2SYpZ92iLQsF6QZl5u/giphy.gif" alt="Album Art">
 
-        let accessToken = '';
+        <!-- Track Details -->
+        <div class="track-details">
+            <h3 id="trackName">Track Name</h3>
+            <p id="artistName">Artist Name</p>
+        </div>
 
-        // Authenticate with Spotify
-        function authenticate() {
-            window.location = authUrl;
-        }
-
-        // Parse Spotify token
-        window.onload = function () {
-            const urlParams = new URLSearchParams(window.location.hash.substring(1));
-            accessToken = urlParams.get('access_token');
-
-            if (accessToken) {
-                fetchCurrentlyPlaying(accessToken);
-                // Refresh every second
-                setInterval(() => {
-                    fetchCurrentlyPlaying(accessToken);
-                }, 1000);
-            } else {
-                authenticate();
-            }
-        };
-
-        // Fetch the currently playing song and update the album art
-        function fetchCurrentlyPlaying(token) {
-            fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const albumArt = document.getElementById('albumArt');
-                if (data && data.item) {
-                    const albumArtUrl = data.item.album.images[0].url;
-                    albumArt.src = albumArtUrl;
-                } else {
-                    albumArt.src = 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDR2MmV0Mzc0NXdia3c4NTA5aXQ3b2V5YTZ5ZThhbmhwMnFnZXU0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2SYpZ92iLQsF6QZl5u/giphy.gif';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching track data:', error);
-                // Display default GIF in case of error
-                document.getElementById('albumArt').src = 'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDR2MmV0Mzc0NXdia3c4NTA5aXQ3b2V5YTZ5ZThhbmhwMnFnZXU0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2SYpZ92iLQsF6QZl5u/giphy.gif';
-            });
-        }
-    </script>
-</body>
-</html>
+        <!-- Timestamps -->
+        <div class="timestamps">
+            <span id="currentTime">0:00</span>
+            <span id="totalTime">0:00</span>
+     
